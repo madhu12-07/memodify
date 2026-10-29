@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ta">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Memodify{% endblock %} · Memodify</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ocean.css') }}">
+</head>
+<body>
+  {% include "_ocean.html" %}
+  <header class="topbar">
+    <div class="container">
+      <a class="brand" href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='img/logo-sm.png') }}" alt="">
+        <span>Memodify<small>Tamil songs for your mood</small></span>
+      </a>
+      {% set ep = request.endpoint %}
+      <nav class="nav-links" aria-label="Main">
+        <a href="{{ url_for('home') }}" class="{{ 'active' if ep == 'home' }}"><span class="ico">🏠</span>Home</a>
+        <a href="{{ url_for('journey_page') }}" class="{{ 'active' if ep == 'journey_page' }}"><span class="ico">🌈</span>Journey</a>
+        <a href="{{ url_for('favorites_page') }}" class="{{ 'active' if ep == 'favorites_page' }}"><span class="ico">❤️</span>Favorites</a>
+        <a href="{{ url_for('history_page') }}" class="{{ 'active' if ep == 'history_page' }}"><span class="ico">🕘</span>History</a>
+        <a href="{{ url_for('logout') }}" class="logout"><span class="ico">🚪</span>Logout</a>
+      </nav>
+      {% if user %}
+        {% if user['avatar'] %}
+          <img class="avatar user-chip" src="{{ user['avatar'] }}" alt="" referrerpolicy="no-referrer">
+        {% else %}
+          <span class="avatar user-chip" title="{{ user['name'] }}">{{ user['name'][0]|upper }}</span>
+        {% endif %}
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer"><div class="container">Memodify · Tamil songs for your mood</div></footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="{{ url_for('static', filename='js/cartoon.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+  {% block scripts %}{% endblock %}
+  <script src="{{ url_for('static', filename='js/ocean.js') }}"></script>
+</body>
+</html>

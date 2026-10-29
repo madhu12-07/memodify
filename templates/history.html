@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}History{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>🕘 Mood history</h1>
+  <p class="muted">Your last {{ rows|length }} mood check{{ '' if rows|length == 1 else 's' }}.</p>
+</div>
+
+{% if rows %}
+  {% set biggest = counts.values()|max %}
+  <section class="card history-bars" aria-label="Mood summary">
+    {% for m, c in counts.items() %}
+      <div class="bar-row">
+        <span>{{ MOODS[m]['emoji'] }} {{ MOODS[m]['label'] }}</span>
+        <div class="bar"><span style="width: {{ (c / biggest * 100)|round|int if biggest else 0 }}%; background: {{ MOODS[m]['color'] }}"></span></div>
+        <span>{{ c }}</span>
+      </div>
+    {% endfor %}
+  </section>
+
+  <section class="card" style="overflow-x:auto">
+    <table class="table">
+      <thead><tr><th>Mood</th><th>Detected by</th><th>When</th><th></th></tr></thead>
+      <tbody>
+        {% for r in rows %}
+        <tr>
+          <td>{{ MOODS[r['mood']]['emoji'] }} {{ MOODS[r['mood']]['label'] }}</td>
+          <td><span class="badge">{{ r['source'] }}</span></td>
+          <td><time data-utc="{{ r['created_at'] }}">{{ r['created_at'] }} UTC</time></td>
+          <td><a class="btn ghost small" href="{{ url_for('results_page', mood=r['mood'], source=r['source']) }}">Songs</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% else %}
+  <div class="card empty">No history yet. <a href="{{ url_for('home') }}" style="text-decoration:underline">Start from Home!</a></div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+  // SQLite stores UTC; show the viewer's local time instead
+  document.querySelectorAll('time[data-utc]').forEach(function (t) {
+    var d = new Date(t.dataset.utc.replace(' ', 'T') + 'Z');
+    if (!isNaN(d)) t.textContent = d.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+  });
+</script>
+{% endblock %}

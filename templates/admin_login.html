@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin sign in · Memodify</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ocean.css') }}">
+</head>
+<body>
+  {% include "_ocean.html" %}
+  <main class="a-login">
+    <form class="card" method="post" action="{{ url_for('admin_login') }}" autocomplete="off">
+      <div class="shield" aria-hidden="true">🛡️</div>
+      <h1>Admin sign in</h1>
+      <p class="sub">Memodify control panel. Authorised people only.</p>
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+      <div class="field"><label for="username">Username</label><input id="username" name="username" autocomplete="username" required autofocus></div>
+      <div class="field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required></div>
+      <button class="btn block" type="submit">Sign in</button>
+      {% if error %}<p class="form-msg" role="alert">{{ error }}</p>{% endif %}
+      <p class="center" style="margin:16px 0 0"><a class="link-quiet" href="{{ url_for('splash') }}">Back to the website</a></p>
+    </form>
+  </main>
+  <script src="{{ url_for('static', filename='js/ocean.js') }}"></script>
+</body>
+</html>

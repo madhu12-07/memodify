@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Face mood{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>📷 Detect mood from your face</h1>
+  <p class="muted">Turn on the camera and look at it. The video is processed on your device; only the expression scores are sent to the server.</p>
+</div>
+
+<div class="stage">
+  <div>
+    <div class="camera-box" id="camera-box">
+      <video id="video" autoplay muted playsinline></video>
+      <canvas id="overlay"></canvas>
+      <div class="scan-line"></div>
+      <div class="placeholder" id="placeholder">
+        <div><div style="font-size:3rem">🙂</div>The camera is off.<br><span class="small">Press “Start camera”.</span></div>
+      </div>
+    </div>
+    <div class="status" id="status">Loading face models…</div>
+    <div class="row">
+      <button class="btn" id="start-btn" type="button" disabled>📷 Start camera</button>
+      <button class="btn" id="detect-btn" type="button" disabled>✨ Detect my mood</button>
+      <button class="btn ghost" id="stop-btn" type="button" disabled>Stop</button>
+    </div>
+  </div>
+
+  <aside class="card">
+    <h3>Live expression</h3>
+    <div class="live" aria-live="polite">
+      <div class="live-emoji" id="live-emoji">❓</div>
+      <div class="live-label" id="live-label">No face yet</div>
+    </div>
+    <div class="bars" id="bars"></div>
+    <hr style="border:0;border-top:1px solid var(--card-border);margin:20px 0">
+    <p class="small muted">💡 Sit in good light and keep your whole face in view. If the camera does not work,
+      <a href="{{ url_for('detect_page') }}" style="text-decoration:underline">choose another way</a>.</p>
+  </aside>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='vendor/face-api/face-api.js') }}"></script>
+<script src="{{ url_for('static', filename='js/face.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ta">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Memodify</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ocean.css') }}">
+</head>
+<body>
+  {% include "_ocean.html" %}
+  <main class="splash" id="splash" data-next="{{ url_for('home') if logged_in else url_for('login_page') }}">
+    <div>
+      <div class="logo-wrap">
+        <span class="ring"></span><span class="ring"></span><span class="ring"></span>
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Memodify logo">
+      </div>
+      <h1>Memodify</h1>
+      <p class="ta">Tamil songs for your mood</p>
+      <div class="eq" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="loader"><span></span></div>
+      <a class="muted small" href="{{ url_for('home') if logged_in else url_for('login_page') }}">Skip ›</a>
+    </div>
+  </main>
+  <script>
+    // logo shows off for ~3 seconds, then the login page (or home if already logged in) opens
+    setTimeout(function () { location.href = document.getElementById('splash').dataset.next; }, 3000);
+  </script>
+  <script src="{{ url_for('static', filename='js/ocean.js') }}"></script>
+</body>
+</html>

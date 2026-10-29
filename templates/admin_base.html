@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% block title %}Admin{% endblock %} · Memodify</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ocean.css') }}">
+</head>
+<body>
+  {% include "_ocean.html" %}
+  <div class="admin-shell">
+    <aside class="card admin-side">
+      <a class="brand" href="{{ url_for('admin_dashboard') }}"><img src="{{ url_for('static', filename='img/logo-sm.png') }}" alt=""><span>Memodify</span></a>
+      <span class="tag">Admin panel</span>
+      {% set ep = request.endpoint %}
+      <a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if ep == 'admin_dashboard' }}">📊 Overview</a>
+      <a href="{{ url_for('admin_users') }}" class="{{ 'active' if ep == 'admin_users' }}">👥 Users</a>
+      <a href="{{ url_for('splash') }}" target="_blank" rel="noopener">🌐 View website</a>
+      <span class="grow"></span>
+      <form method="post" action="{{ url_for('admin_logout') }}"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button class="nav-btn" type="submit">🚪 Sign out</button></form>
+    </aside>
+    <main class="admin-main">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  <script src="{{ url_for('static', filename='js/cartoon.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/ocean.js') }}"></script>
+</body>
+</html>

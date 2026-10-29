@@ -1,0 +1,2 @@
+Mood labels are ESTIMATED from lyrics.
+Checked on 36 hand-labelled songs: exact mood 39%, positive/negative feeling 69%.

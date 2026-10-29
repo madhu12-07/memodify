@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Mood quiz{% endblock %}
+{% block content %}
+<div class="quiz-wrap">
+  <div class="page-head">
+    <h1>❓ Mood quiz</h1>
+    <p class="muted">Choose the answer that feels right. Questions are in Tamil with English underneath.</p>
+  </div>
+  <div class="progress"><span id="progress"></span></div>
+  <p class="small muted" id="counter"></p>
+  <div class="card fade-in" id="question-card">
+    <p class="muted">Loading…</p>
+  </div>
+  <div class="row" style="margin-top:18px">
+    <button class="btn ghost" id="back-btn" type="button" disabled>‹ Back</button>
+    <button class="btn" id="next-btn" type="button" disabled>Next ›</button>
+  </div>
+  <p class="form-msg" id="quiz-msg" role="alert"></p>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>{% endblock %}

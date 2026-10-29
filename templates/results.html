@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ info['label'] }} songs{% endblock %}
+{% block content %}
+<section class="mood-hero" style="--mood: {{ info['color'] }}">
+  <div class="em">{{ info['emoji'] }}</div>
+  <div>
+    <span class="badge">Mood: {{ info['label'] }}{% if source %} · via {{ source }}{% endif %}</span>
+    {% if age_info %}<span class="badge">{{ age_info['emoji'] }} Age {{ age_info['label'] }} · songs from {{ age_info['years'][0] }}-{{ age_info['years'][1] }}</span>{% endif %}
+    <h1 style="margin-top:8px">{{ info['msg'] }}</h1>
+    <p class="muted" style="margin:0">Feeling {{ info['label']|lower }}? Take the Mood Journey and let the playlist lift you step by step, automatically.</p>
+    <div class="row" style="margin-top:14px">
+      <a class="btn" href="{{ url_for('journey_page', mood=mood) }}">🌈 Start Mood Journey</a>
+    </div>
+  </div>
+</section>
+
+<div class="row" style="justify-content:space-between;align-items:center;margin-bottom:14px">
+  <h2 style="margin:0">🎶 Tamil songs for this mood</h2>
+  <button class="btn ghost small" id="more-btn" type="button">🔀 Shuffle</button>
+</div>
+<div id="player-slot"></div>
+<div class="song-list" id="song-list" data-mood="{{ mood }}" data-age="{{ age or '' }}"><p class="muted">Loading songs…</p></div>
+<p class="small muted" style="margin-top:12px">Moods are estimated from song lyrics, so a few songs may feel different to you.</p>
+
+<div class="row" style="margin-top:28px">
+  <a class="btn ghost" href="{{ url_for('detect_page') }}">🎯 Detect mood again</a>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/player.js') }}"></script>
+<script src="{{ url_for('static', filename='js/songs.js') }}"></script>
+<script src="{{ url_for('static', filename='js/results.js') }}"></script>
+{% endblock %}

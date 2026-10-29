@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="hero card">
+  <div>
+    <span class="badge">👋 Hello, {{ user['name'].split()[0] }}!</span>
+    <h1>Detect.<br>Listen.<br><em>Rise.</em></h1>
+    <p class="lead">Tell us how you feel and your age group. We play Tamil songs from the years you grew up with, then lift your mood step by step.</p>
+    <div class="row" style="margin-top:6px">
+      <a class="btn" href="{{ url_for('detect_page') }}">🎯 Detect Mood</a>
+      <a class="btn ghost" href="{{ url_for('journey_page') }}">🌈 Mood Journey</a>
+    </div>
+    <div class="perks">
+      <div class="perk">📷<span><b>Face reading</b><small>Stays on your device</small></span></div>
+      <div class="perk">🎶<span><b>Only Tamil songs</b><small>{{ '{:,}'.format(total_songs) }} in the library</small></span></div>
+      <div class="perk">🌈<span><b>Mood Journey</b><small>Sad to happy, on its own</small></span></div>
+    </div>
+  </div>
+  <div class="hero-art" aria-hidden="true"><img class="hero-girl" src="{{ url_for('static', filename='img/cartoon-girl.jpg') }}" alt=""></div>
+</section>
+
+<section class="stats">
+  <div class="card stat"><b>{{ total }}</b><span class="muted small">Moods detected</span></div>
+  <div class="card stat">
+    <b>{% if top_mood %}{{ MOODS[top_mood]['emoji'] }}{% else %}—{% endif %}</b>
+    <span class="muted small">{% if top_mood %}Top mood: {{ MOODS[top_mood]['label'] }}{% else %}Top mood{% endif %}</span>
+  </div>
+  <div class="card stat"><b>{{ fav_count }}</b><span class="muted small">Favorite songs</span></div>
+  <div class="card stat"><b>{{ '{:,}'.format(total_songs) }}</b><span class="muted small">Tamil songs in library</span></div>
+</section>
+
+<section>
+  <h2>Recent moods</h2>
+  {% if recent %}
+    <div class="recent">
+      {% for r in recent %}
+        <a class="chip" href="{{ url_for('results_page', mood=r['mood'], source=r['source']) }}">
+          <i style="background: {{ MOODS[r['mood']]['color'] }}"></i>
+          {{ MOODS[r['mood']]['emoji'] }} {{ MOODS[r['mood']]['label'] }}
+          <span class="muted small">· {{ r['source'] }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="muted">Nothing yet. Tap Detect Mood above!</p>
+  {% endif %}
+</section>
+{% endblock %}

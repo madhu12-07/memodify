@@ -1,0 +1,69 @@
+{% extends "admin_base.html" %}
+{% block title %}Overview{% endblock %}
+{% block content %}
+<div class="admin-head">
+  <div><h1>Overview</h1><p class="muted" style="margin:4px 0 0">How people are using Memodify.</p></div>
+  <div class="row">
+    <span class="pill {{ 'ok' if youtube_on else 'off' }}">{{ '●' }} YouTube playback {{ 'on' if youtube_on else 'off' }}</span>
+    <span class="pill {{ 'ok' if google_on else 'off' }}">{{ '●' }} Google sign-in {{ 'on' if google_on else 'off' }}</span>
+  </div>
+</div>
+
+<section class="kpis">
+  <div class="card kpi"><b>{{ totals.users }}</b><span>Registered users</span><small>+{{ totals.new_week }} this week</small></div>
+  <div class="card kpi"><b>{{ totals.moods }}</b><span>Moods detected</span></div>
+  <div class="card kpi"><b>{{ totals.favs }}</b><span>Songs hearted</span></div>
+  <div class="card kpi"><b>{{ '{:,}'.format(totals.songs) }}</b><span>Songs in library</span></div>
+</section>
+
+<section class="admin-cols">
+  <div class="card">
+    <h2>Moods detected, last 7 days</h2>
+    <div class="week" role="img" aria-label="Moods detected per day for the last 7 days">
+      {% set top = (days | map(attribute='n') | max) or 1 %}
+      {% for d in days %}
+        <div><b>{{ d.n }}</b><i style="height: {{ (d.n / top * 100) | round | int }}%"></i>{{ d.label }}</div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="card">
+    <h2>How people detect mood</h2>
+    {% set src_total = (sources.values() | sum) or 1 %}
+    {% for key, label in [('face','Face'), ('quiz','Quiz'), ('emoji','Emoji')] %}
+      <div class="hbar"><span>{{ label }}</span><div class="track"><span style="width: {{ (sources.get(key, 0) / src_total * 100) | round | int }}%"></span></div><b>{{ sources.get(key, 0) }}</b></div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="admin-cols even">
+  <div class="card">
+    <h2>Moods people feel</h2>
+    {% set mtop = (mood_counts.values() | max) or 1 %}
+    {% for m in mood_order %}
+      <div class="hbar" style="--c: {{ MOODS[m]['color'] }}"><span>{{ MOODS[m]['emoji'] }} {{ MOODS[m]['label'] }}</span><div class="track"><span style="width: {{ (mood_counts[m] / mtop * 100) | round | int }}%"></span></div><b>{{ mood_counts[m] }}</b></div>
+    {% endfor %}
+  </div>
+  <div class="card">
+    <h2>Newest users</h2>
+    {% for u in recent_users %}
+      <div class="person">
+        {% if u['avatar'] %}<img class="avatar" src="{{ u['avatar'] }}" alt="" referrerpolicy="no-referrer">{% else %}<span class="avatar">{{ u['name'][0]|upper }}</span>{% endif %}
+        <div><b>{{ u['name'] }}</b><small>{{ u['email'] }}</small></div>
+      </div>
+    {% else %}<p class="muted">No users yet.</p>{% endfor %}
+    <p style="margin:14px 0 0"><a class="btn ghost small" href="{{ url_for('admin_users') }}">All users</a></p>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Latest activity</h2>
+  <div class="tbl-wrap"><table class="table">
+    <thead><tr><th>User</th><th>Mood</th><th>Method</th><th>When (UTC)</th></tr></thead>
+    <tbody>
+    {% for a in activity %}
+      <tr><td>{{ a['name'] }}</td><td>{{ MOODS[a['mood']]['emoji'] }} {{ MOODS[a['mood']]['label'] }}</td><td>{{ a['source'] }}</td><td>{{ a['created_at'] }}</td></tr>
+    {% else %}<tr><td colspan="4" class="muted">Nothing yet.</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+</section>
+{% endblock %}

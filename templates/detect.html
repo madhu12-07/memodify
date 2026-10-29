@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Detect Mood{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>🎯 Detect your <span class="grad-text">mood</span></h1>
+  <p class="muted">Two quick steps. We use your mood and your age group to pick Tamil songs from the years you grew up with.</p>
+</div>
+
+<section class="card step" aria-labelledby="step1">
+  <h3 id="step1"><span class="step-no">1</span> Choose your age group</h3>
+  <div class="age-grid" id="age-grid" role="radiogroup" aria-label="Age group">
+    {% for k in age_order %}
+    <button type="button" class="age{{ ' selected' if k == chosen }}" role="radio" aria-checked="{{ 'true' if k == chosen else 'false' }}" data-age="{{ k }}">
+      <span class="age-emoji">{{ ages[k]['emoji'] }}</span>
+      <b>{{ ages[k]['label'] }}</b>
+      <small>{{ ages[k]['blurb'] }}</small>
+      <em>{{ ages[k]['years'][0] }}-{{ ages[k]['years'][1] }}</em>
+    </button>
+    {% endfor %}
+  </div>
+  <p class="form-msg" id="age-msg" role="alert"></p>
+</section>
+
+<section class="step" aria-labelledby="step2">
+  <h3 id="step2" style="margin:26px 0 14px"><span class="step-no">2</span> Choose how to detect your mood</h3>
+  <div class="options methods{{ '' if chosen else ' locked' }}" id="methods" aria-label="Choose how to detect your mood">
+    <a class="option" href="{{ url_for('face_page') }}" {{ '' if chosen else 'aria-disabled=true' }}>
+      <div class="big">📷</div>
+      <h3>Face recognition</h3>
+      <p>Your camera reads your expression. The video never leaves your device.</p>
+    </a>
+    <a class="option" href="{{ url_for('quiz_page') }}" {{ '' if chosen else 'aria-disabled=true' }}>
+      <div class="big">❓</div>
+      <h3>Quiz</h3>
+      <p>Five short questions in Tamil and English.</p>
+    </a>
+    <a class="option" href="{{ url_for('emoji_page') }}" {{ '' if chosen else 'aria-disabled=true' }}>
+      <div class="big">😊</div>
+      <h3>Emoji</h3>
+      <p>Tap the emoji that matches how you feel.</p>
+    </a>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/detect.js') }}"></script>{% endblock %}

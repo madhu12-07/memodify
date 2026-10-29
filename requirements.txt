@@ -1,0 +1,5 @@
+Flask>=3.0
+google-auth>=2.29
+requests>=2.31
+pytest>=8.0
+gunicorn>=22.0

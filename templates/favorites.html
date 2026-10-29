@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Favorites{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>❤️ Favorite songs</h1>
+  <p class="muted">Songs you have hearted.</p>
+</div>
+
+{% if songs %}
+  <div id="player-slot"></div>
+  <div class="song-list" id="song-list" data-static="1"></div>
+  <script id="songs-data" type="application/json">{{ songs|tojson }}</script>
+{% else %}
+  <div class="card empty">Nothing here yet. Tap the heart on any song to save it.</div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+{% if songs %}
+<script src="{{ url_for('static', filename='js/player.js') }}"></script>
+<script src="{{ url_for('static', filename='js/songs.js') }}"></script>
+<script>
+  var data = JSON.parse(document.getElementById('songs-data').textContent);
+  SongUI.render(document.getElementById('song-list'), data, { removeOnUnfav: true });
+</script>
+{% endif %}
+{% endblock %}

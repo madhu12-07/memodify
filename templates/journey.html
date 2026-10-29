@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Mood Journey{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>🌈 Mood Journey</h1>
+  <p class="muted">Start from how you feel. The playlist moves on its own, one mood at a time, towards happy. Nothing to tap while you listen.</p>
+  {% if age_info %}<span class="badge">{{ age_info['emoji'] }} Songs for age {{ age_info['label'] }} · {{ age_info['years'][0] }}-{{ age_info['years'][1] }}</span>{% endif %}
+</div>
+
+<!-- ============ 1. setup ============ -->
+<section class="card" id="setup" data-start="{{ start_mood }}">
+  <h3>1 · Where are you now?</h3>
+  <div class="chips" id="mood-chips" role="radiogroup" aria-label="Start mood">
+    {% for m, p in paths.items() %}
+      <button type="button" class="pick{{ ' selected' if m == start_mood }}" role="radio" aria-checked="{{ 'true' if m == start_mood else 'false' }}"
+              data-mood="{{ m }}" style="--c: {{ MOODS[m]['color'] }}">{{ MOODS[m]['emoji'] }} {{ MOODS[m]['label'] }}</button>
+    {% endfor %}
+  </div>
+
+  <h3 style="margin-top:22px">2 · How long should the journey be?</h3>
+  <div class="chips" id="minute-chips" role="radiogroup" aria-label="Duration">
+    {% for mins in minutes_options %}
+      <button type="button" class="pick{{ ' selected' if mins == 20 }}" role="radio" aria-checked="{{ 'true' if mins == 20 else 'false' }}" data-minutes="{{ mins }}">{{ mins }} min</button>
+    {% endfor %}
+  </div>
+
+  <h3 style="margin-top:22px">Your route</h3>
+  <div class="route" id="route" aria-live="polite"></div>
+
+  <div class="row" style="margin-top:22px;align-items:center">
+    <button class="btn" id="begin-btn" type="button">▶ Begin journey</button>
+    <label class="small muted hidden" id="speed-wrap">Demo speed
+      <select id="speed" class="select">
+        <option value="1">1× (real time)</option>
+        <option value="10">10× faster</option>
+        <option value="30">30× faster</option>
+      </select>
+    </label>
+  </div>
+  <p class="form-msg" id="setup-msg" role="alert"></p>
+</section>
+
+<!-- ============ 2. running ============ -->
+<section id="run" class="hidden">
+  <div class="card journey-head">
+    <div>
+      <span class="badge" id="stage-badge">Stage 1 of 4</span>
+      <h2 id="stage-title" style="margin:8px 0 2px">Sad</h2>
+      <p class="muted small" id="shift-note" style="margin:0"></p>
+    </div>
+    <div class="timer" aria-live="off">
+      <b id="elapsed">00:00</b><span class="muted small"> / <span id="total">20:00</span></span>
+      <div class="progress" style="margin-top:8px"><span id="journey-progress"></span></div>
+    </div>
+  </div>
+
+  <div class="journey-grid">
+    <div class="card now">
+      <p class="muted small" style="margin:0 0 4px">NOW PLAYING</p>
+      <h2 id="song-title" style="margin:0">—</h2>
+      <p class="muted" id="song-meta" style="margin:2px 0 12px"></p>
+      <div id="yt-wrap" class="hidden"><div id="yt"></div></div>
+      <div class="slot hidden" id="slot-wrap">
+        <div class="eq small-eq" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="progress"><span id="slot-progress"></span></div>
+      </div>
+      <p class="small muted hidden" id="audio-note"></p>
+      <div class="row" style="margin:12px 0">
+        <button class="btn small" id="pause-btn" type="button">⏸ Pause</button>
+        <button class="btn ghost small" id="skip-btn" type="button">⏭ Next song</button>
+        <button class="btn ghost small" id="stop-btn" type="button">■ End journey</button>
+        <a class="small muted" id="yt-link" href="#" target="_blank" rel="noopener" title="Optional: search this song on YouTube">YouTube ↗</a>
+      </div>
+      <details class="lyrics" id="lyrics-box" open>
+        <summary>Lyrics</summary>
+        <div class="seg" role="tablist">
+          <button type="button" class="seg-btn selected" data-lang="tamil">Tamil</button>
+          <button type="button" class="seg-btn" data-lang="english">Transliteration</button>
+        </div>
+        <pre id="lyrics-text" tabindex="0">Loading…</pre>
+      </details>
+    </div>
+
+    <div>
+      <div class="card">
+        <h3 style="margin-top:0">Your mood curve</h3>
+        <div class="legend small muted">
+          <span><i class="sw solid"></i> Songs played</span>
+          <span><i class="sw dashed"></i> Planned route</span>
+        </div>
+        <div id="chart" class="chart" role="img" aria-label="Line chart of mood positivity over the journey"></div>
+        <details class="small" style="margin-top:8px">
+          <summary class="muted">View as table</summary>
+          <table class="table" id="stage-table"><thead><tr><th>Stage</th><th>Mood</th><th>From</th><th>To</th></tr></thead><tbody></tbody></table>
+        </details>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h3 style="margin-top:0">Up next</h3>
+        <div id="upnext" class="up-next"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. done ============ -->
+<section id="done" class="hidden">
+  <div class="card center" style="padding:36px 20px">
+    <div style="font-size:3.2rem">🎉</div>
+    <h2>Journey complete</h2>
+    <p class="muted" id="done-text"></p>
+    <div id="done-chart" class="chart" style="max-width:640px;margin:10px auto"></div>
+    <div class="row" style="justify-content:center;margin-top:12px">
+      <button class="btn" id="again-btn" type="button">🔁 New journey</button>
+      <a class="btn ghost" href="{{ url_for('home') }}">Home</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>window.JOURNEY_PATHS = {{ paths|tojson }}; window.MOOD_INFO = {{ MOODS|tojson }}; window.SLOT_SECONDS = {{ slot_seconds }}; window.VALENCE = {{ valence|tojson }};</script>
+<script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+<script src="{{ url_for('static', filename='js/journey.js') }}"></script>
+{% endblock %}

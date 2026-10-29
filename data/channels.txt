@@ -1,0 +1,14 @@
+# YouTube channels whose songs go into data/video_index.csv (one per line: @handle or channel id UCxxxx...).
+# Official label channels are best: their songs are public, embeddable and correctly named.
+# Lines starting with # are ignored. If a handle is not found the tool tells you - fix the spelling or paste the UC... id.
+@SonyMusicSouth
+@ThinkMusicIndia
+@LahariMusic
+@SaregamaTamil
+@U1Records
+@Muzik247
+@StarMusicIndia
+@trendmusic
+@DivoMusic
+@AyngaranMusic
+@TSeriesTamil

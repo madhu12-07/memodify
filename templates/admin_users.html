@@ -1,0 +1,31 @@
+{% extends "admin_base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<div class="admin-head">
+  <div><h1>Users</h1><p class="muted" style="margin:4px 0 0">{{ rows|length }} shown</p></div>
+  <form class="search" method="get" action="{{ url_for('admin_users') }}">
+    <input type="search" name="q" value="{{ term }}" placeholder="Search name or email" aria-label="Search users">
+    <button class="btn small" type="submit">Search</button>
+  </form>
+</div>
+<section class="card">
+  <div class="tbl-wrap"><table class="table">
+    <thead><tr><th>Name</th><th>Email</th><th>Sign-in</th><th>Moods</th><th>Favorites</th><th>Joined (UTC)</th><th></th></tr></thead>
+    <tbody>
+    {% for u in rows %}
+      <tr>
+        <td>{{ u['name'] }}</td><td>{{ u['email'] }}</td>
+        <td><span class="pill">{{ 'Google' if u['google_sub'] else 'Email' }}</span></td>
+        <td>{{ u['moods'] }}</td><td>{{ u['favs'] }}</td><td>{{ u['created_at'] }}</td>
+        <td>
+          <form method="post" action="{{ url_for('admin_delete_user', user_id=u['id']) }}" onsubmit="return confirm('Delete {{ u['name']|e }} and all their history and favorites? This cannot be undone.')">
+            <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+            <button class="btn danger small" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% else %}<tr><td colspan="7" class="muted">No users found.</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+</section>
+{% endblock %}

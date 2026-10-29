@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Emoji mood{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>😊 Pick an emoji</h1>
+  <p class="muted">Tap the emoji that matches how you feel right now.</p>
+</div>
+<div class="emoji-grid" id="emoji-grid" role="listbox" aria-label="Emojis"></div>
+<button class="btn" id="go-btn" type="button" disabled>🎶 Show songs</button>
+<p class="form-msg" id="emoji-msg" role="alert"></p>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/emoji.js') }}"></script>{% endblock %}
